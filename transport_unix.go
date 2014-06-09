@@ -154,6 +154,7 @@ func (t *unixTransport) ReadMessage() (*Message, error) {
 				if uint32(j) >= unixfds {
 					return nil, InvalidMessageError("invalid index for unix fd")
 				}
+				syscall.Syscall(syscall.SYS_FCNTL, uintptr(fds[j]), syscall.F_SETFD, syscall.FD_CLOEXEC)
 				msg.Body[i] = UnixFD(fds[j])
 			}
 		}
